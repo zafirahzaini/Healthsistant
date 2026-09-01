@@ -31,4 +31,4 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 EXPOSE 80
 
 # Drop existing tables, run fresh migrations, and start Apache
-CMD ["sh", "-c", "php artisan migrate --force && apache2-foreground"]
+CMD ["apache2-foreground"]
