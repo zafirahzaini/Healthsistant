@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             'age'                  => 30,
             'role'                 => 'operation manager',
             'must_change_password' => 0,
-            'available_status'     => ' ',
+            'available_status'     => null,
         ]);
     }
 }
