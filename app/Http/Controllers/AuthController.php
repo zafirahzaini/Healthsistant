@@ -245,74 +245,62 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-
         $request->validate([
-
             'email' => 'required|email',
-
             'password' => 'required'
-
         ]);
 
-        $email = trim($request->email);
-
+        $email = strtolower(trim($request->email));
         $password = $request->password;
 
+        // Query with LOWER() to avoid case-sensitivity issues on Aiven MySQL
         $user = DB::table('users')
-            ->where('email', $email)
+            ->whereRaw('LOWER(email) = ?', [$email])
             ->first();
 
         // ================= LOGIN SUCCESS =================
-
         if ($user && Hash::check($password, $user->password)) {
 
             session([
-
                 'userID' => $user->userID,
-
-                'name' => $user->name,
-
-                'role' => $user->role
-
+                'name'   => $user->name,
+                'role'   => $user->role
             ]);
 
             // ================= FORCE PASSWORD CHANGE =================
-
-            if ($user->must_change_password == 1) {
-
+            if ((int)$user->must_change_password === 1) {
                 return redirect('/change-password');
             }
 
+            // Normalize role string for comparison
+            $role = strtolower(trim($user->role));
+
             // ================= ROLE REDIRECT =================
-
-            if ($user->role == 'operation manager') {
-
+            if ($role === 'operation manager' || $role === 'om') {
                 return redirect('/dashboard/admin');
             }
 
-            if ($user->role == 'doctor') {
-
+            if (str_contains($role, 'doctor')) {
                 return redirect('/dashboard/doctor');
             }
 
-            if ($user->role == 'nurse_frontdesk' || $user->role == 'nurse') {
-                return redirect('/dashboard/nurse');
-            }
-
-            if ($user->role == 'nurse_cardiology') {
+            if ($role === 'nurse_cardiology') {
                 return redirect('/dashboard/nurse-cardiology');
             }
 
-            if ($user->role == 'nurse_haematology') {
+            if ($role === 'nurse_haematology') {
                 return redirect('/dashboard/nurse-haematology');
             }
-                        return redirect('/dashboard');
+
+            if (str_contains($role, 'nurse')) {
+                return redirect('/dashboard/nurse');
+            }
+
+            return redirect('/dashboard/admin');
         }
 
-        return back()
-            ->with('error', 'Invalid email or password');
+        return back()->with('error', 'Invalid email or password');
     }
-
 
 
     // =====================================================
