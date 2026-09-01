@@ -13,7 +13,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Creates a default user you can use to log in
         User::create([
             'name' => 'Admin User',
             'email' => 'admin@gmail.com',
