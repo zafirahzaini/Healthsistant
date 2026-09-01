@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::table('admissions', function (Blueprint $table) {
             // Add bed_number right after admission_ward
-            $table->string('bed_number')->nullable()->after('admission_ward');
+            $table->string('bed_number')->nullable();
 
             // Drop unnecessary columns
             $table->dropColumn(['DiseaseID', 'acuity_level', 'diagnosis_notes']);
