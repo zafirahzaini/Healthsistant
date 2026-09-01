@@ -9,21 +9,25 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('admissions', function (Blueprint $table) {
-            // Add bed_number right after admission_ward
-            $table->string('bed_number')->nullable();
-
-            // Drop unnecessary columns
-            $table->dropColumn(['DiseaseID', 'acuity_level', 'diagnosis_notes']);
+            if (Schema::hasColumn('admissions', 'DiseaseID')) {
+                $table->dropColumn('DiseaseID');
+            }
+            if (Schema::hasColumn('admissions', 'acuity_level')) {
+                $table->dropColumn('acuity_level');
+            }
+            if (Schema::hasColumn('admissions', 'diagnosis_notes')) {
+                $table->dropColumn('diagnosis_notes');
+            }
+            if (!Schema::hasColumn('admissions', 'bed_number')) {
+                $table->string('bed_number')->nullable();
+            }
         });
     }
 
     public function down(): void
     {
         Schema::table('admissions', function (Blueprint $table) {
-            $table->dropColumn('bed_number');
-            $table->string('DiseaseID')->nullable();
-            $table->string('acuity_level')->nullable();
-            $table->text('diagnosis_notes')->nullable();
+            //
         });
     }
 };
