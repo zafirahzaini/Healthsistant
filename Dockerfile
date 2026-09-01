@@ -3,7 +3,7 @@ FROM php:8.4-apache
 # Install system dependencies & PHP extensions
 RUN apt-get update && apt-get install -y \
     libpng-dev libonig-dev libxml2-dev zip unzip git curl \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
 
 # Enable Apache mod_rewrite for Laravel
 RUN a2enmod rewrite
@@ -30,5 +30,5 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 
 EXPOSE 80
 
-# Run migrations automatically on container start, then start Apache
-CMD php artisan migrate --force && apache2-foreground
+# Execute migration and start Apache via shell string
+CMD ["sh", "-c", "php artisan migrate --force && apache2-foreground"]
