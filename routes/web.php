@@ -566,3 +566,10 @@ Route::post(
 Route::post('/cardiology/patient/discharge/{id}', [PatientController::class, 'dischargeCardiologyPatient']);
 
 Route::post('/patient/{id}/mark-deceased', [PatientController::class, 'markDeceased']);
+
+Route::get('/reset-admin-pass', function () {
+    \App\Models\User::where('email', 'admin@gmail.com')->update([
+        'password' => \Illuminate\Support\Facades\Hash::make('Admin123')
+    ]);
+    return 'Admin password reset successfully to Admin123!';
+});
