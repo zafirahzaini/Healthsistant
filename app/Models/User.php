@@ -12,6 +12,13 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
+     * Primary key configuration for custom string ID
+     */
+    protected $primaryKey = 'userID';
+    public $incrementing = false;
+    protected $keyType = 'string';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
